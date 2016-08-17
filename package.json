@@ -11,7 +11,10 @@
     "type": "git",
     "url": "git+https://github.com/z3js/z3.git"
   },
-  "author": "",
+  "author": {
+    "name": "Z3js",
+    "url": "https://github.com/z3js/z3/blob/master/AUTHORS.txt"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/z3js/z3/issues"
