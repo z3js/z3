@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "push":"git add -A && git commit -m 'update' && git push",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

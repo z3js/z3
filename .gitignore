@@ -1,2 +1,12 @@
+# Mac crap
 .DS_Store
+
+# Windows image file caches
+Thumbs.db
+
+#############
+## Node
+#############
+
 node_modules
+*.log
