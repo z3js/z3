@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "push":"git add -A && git commit -m 'update' && git push",
+    "pushdev": "git add -A && git commit -m 'update' && git push -u origin pre-dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
