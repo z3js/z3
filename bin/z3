@@ -1,1 +1,24 @@
 #!/usr/bin/env node
+
+var program = require( 'commander' );
+var version = require( '../package' ).version;
+
+program.version( version ).usage( '<command> [options]' );
+
+program
+    .command( 'list' )
+    .description( 'list' )
+    .alias( 'l' )
+    .action( require( '../command/list' ) );
+
+program
+    .command( 'init' )
+    .description( 'init' )
+    .alias( 'i' )
+    .action( require( '../command/init' ) );
+
+program.parse( process.argv );
+
+if ( !program.args.length ) {
+    program.help();
+}
