@@ -15,5 +15,6 @@
 8. z3 cw (create widget) 创建 widget
 9. z3 iw (install widget) 安装 widget
 10. TODO： 
-  - z3 publish widget 发布 widget
+  - z3 publish 发布 widget 或模板？
   - github？gitlab？切换模板来源；z3 config set registry https://github.com
+  - ~/.z3rc?
