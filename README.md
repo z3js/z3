@@ -11,6 +11,8 @@
   - 名称
   - 描述
   - 版本号
+  - 作者
+  - etc
 7. z3 init 安装模板
 8. z3 cw (create widget) 创建 widget
 9. z3 iw (install widget) 安装 widget
@@ -18,3 +20,12 @@
   - z3 publish 发布 widget 或模板？
   - github？gitlab？切换模板来源；z3 config set registry https://github.com
   - ~/.z3rc?
+
+
+## 关于生态
+
+z3 adduser
+
+.z3ignore 
+
+
