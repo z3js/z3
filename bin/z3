@@ -6,16 +6,10 @@ var version = require( '../package' ).version;
 program.version( version ).usage( '<command> [options]' );
 
 program
-    .command( 'list' )
-    .description( 'list' )
-    .alias( 'l' )
-    .action( require( '../command/list' ) );
-
-program
     .command( 'init' )
-    .description( 'init' )
-    .alias( 'i' )
+    .description( 'generate a new project from a template' )
     .action( require( '../command/init' ) );
+
 
 program.parse( process.argv );
 

@@ -7,6 +7,6 @@
 
 'use strict';
 
-export default function () {
+module.exports = function () {
     console.log( 'list' );
-}
+};
