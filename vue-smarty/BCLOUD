@@ -1,0 +1,1 @@
+BUILD_SUBMITTER -u ./ -c " export MAC=64 && cd app/ecom/pay/fe/project_name && sh build.sh" -o "output/*" -e FIS -m app/ecom/pay/fe/project_name -x

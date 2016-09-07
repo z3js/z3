@@ -1,6 +1,6 @@
 {
   "name": "z3",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "z3",
   "main": "index.js",
   "scripts": {
@@ -24,12 +24,12 @@
     "url": "https://github.com/z3js/z3/issues"
   },
   "homepage": "https://github.com/z3js/z3#readme",
-  "devDependencies": {
+  "devDependencies": {},
+  "dependencies": {
+    "colors": "^1.1.0",
     "co": "^4.6.0",
     "co-prompt": "^1.0.0",
-    "commander": "^2.9.0"
-  },
-  "dependencies": {
+    "commander": "^2.9.0",
     "fis-scaffold-kernel": "^0.2.0"
   }
 }

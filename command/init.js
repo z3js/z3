@@ -7,9 +7,19 @@
 
 'use strict';
 
+var process = require( 'process' );
+
+require( 'colors' );
+
 module.exports = function ( name ) {
 
-    var args = arguments;
+    var args = makeArray( arguments ).filter( function ( val ) {
+        return (typeof val === 'string')
+    } );
+
+    function makeArray( arrayLike ) {
+        return Array.prototype.slice.call( arrayLike );
+    }
 
     var scaffold = new (require( 'fis-scaffold-kernel' ))( {
         type: 'gitlab',
@@ -35,6 +45,7 @@ module.exports = function ( name ) {
         release: false
     } );
 
+
     scaffold.download(
         'z3/z3-warehouse@master',
         function ( err, path ) {
@@ -45,11 +56,23 @@ module.exports = function ( name ) {
                 )
             }
 
+            var cwd = process.cwd();
+
             scaffold.deliver(
                 path,
-                __dirname,
+                cwd,
                 roadmap
             );
+
+            scaffold.util.move(
+                cwd + '/templates',
+                cwd
+            );
+
+            console.log(
+                'z3 · Generated ' + (length > 1 ? args.join( '&' ) : args[0])
+            );
+
         }
     );
 };
