@@ -26,7 +26,6 @@
   "homepage": "https://github.com/z3js/z3#readme",
   "devDependencies": {},
   "dependencies": {
-    "colors": "^1.1.0",
     "co": "^4.6.0",
     "co-prompt": "^1.0.0",
     "commander": "^2.9.0",

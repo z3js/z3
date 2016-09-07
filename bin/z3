@@ -10,6 +10,10 @@ program
     .description( 'generate a new project from a template' )
     .action( require( '../command/init' ) );
 
+program
+    .command( 'install' )
+    .description( ' install components' )
+    .action( require( '../command/install' ) );
 
 program.parse( process.argv );
 

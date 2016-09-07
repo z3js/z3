@@ -8,5 +8,5 @@
 'use strict';
 
 module.exports = function () {
-    console.log( 'list' );
+    console.log( 'install' );
 };
