@@ -1,11 +1,15 @@
 {
   "name": "z3",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.3",
+  "description": "z3",
   "main": "index.js",
   "scripts": {
+    "preinstall": "node ./lib/preinstall.js",
     "pushdev": "git add -A && git commit -m 'update' && git push -u origin pre-dev",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "z3": "./bin/z3"
   },
   "repository": {
     "type": "git",
@@ -20,9 +24,11 @@
     "url": "https://github.com/z3js/z3/issues"
   },
   "homepage": "https://github.com/z3js/z3#readme",
-  "devDependencies": {
+  "devDependencies": {},
+  "dependencies": {
     "co": "^4.6.0",
     "co-prompt": "^1.0.0",
-    "commander": "^2.9.0"
+    "commander": "^2.9.0",
+    "fis-scaffold-kernel": "^0.2.0"
   }
 }

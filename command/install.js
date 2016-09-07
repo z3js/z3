@@ -7,6 +7,6 @@
 
 'use strict';
 
-export default function () {
-    console.log( 'list' );
-}
+module.exports = function () {
+    console.log( 'install' );
+};
