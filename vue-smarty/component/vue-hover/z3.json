@@ -1,5 +1,0 @@
-{
-  "name": "vue-hover",
-  "description": "给元素添加按下态的vue directive",
-  "dependencies": ["helper"]
-}
