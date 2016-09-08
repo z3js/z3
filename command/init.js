@@ -7,28 +7,12 @@
 
 'use strict';
 
-var process          = require( 'process' );
-var path             = require( 'path' );
-var co               = require( 'co' );
-var fs               = require( 'fs' );
-var prompt           = require( 'co-prompt' );
-var versionCompare   = require( '../lib/versionCompare' );
-var downloadTemplate = require( '../lib/downloadTemplate' );
+var process  = require( 'process' );
+var path     = require( 'path' );
+var fs       = require( 'fs' );
+var download = require( '../lib/download' );
 
-module.exports = function ( name ) {
-
-    var args = makeArray( arguments ).filter( function ( val ) {
-        return (typeof val === 'string')
-    } );
-
-    var templateName = args[0];
-
-    var scaffold = new (require( 'fis-scaffold-kernel' ))( {
-        type: 'gitlab',
-        log : {
-            level: 0
-        }
-    } );
+module.exports = function ( templateName ) {
 
     var roadmap = [
         {
@@ -41,24 +25,10 @@ module.exports = function ( name ) {
         }
     ];
 
-    const CONFIG_PATH = path.resolve( __dirname + '/init-conf.json' );
-
-    var initConfig = require( CONFIG_PATH );
-    var pkg;
-
-    if ( initConfig.templatePath ) {
-        pkg = require( initConfig.templatePath + '/package.json' );
-    }
-
-    if ( !pkg || (pkg && (versionCompare( pkg.version, initConfig.version ) === 1)) ) {
-        return downloadTemplate( scaffold, function ( scaffold, tempPath ) {
-            deliver( scaffold, tempPath, roadmap, templateName );
-        } );
-    }
-
-    deliver( scaffold, initConfig.templatePath, roadmap, templateName );
+    return download( 'z3/z3-warehouse@master', function ( scaffold, tempPath ) {
+        deliver( scaffold, tempPath, roadmap, templateName );
+    } );
 };
-
 
 function deliver( scaffold, tempPath, roadmap, templateName ) {
     var cwd = process.cwd();
@@ -79,11 +49,6 @@ function deliver( scaffold, tempPath, roadmap, templateName ) {
     }
 
     console.log(
-        'Done!'
+        templateName + ' done!'
     );
-}
-
-
-function makeArray( arrayLike ) {
-    return Array.prototype.slice.call( arrayLike );
 }

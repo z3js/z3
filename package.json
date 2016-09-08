@@ -1,12 +1,10 @@
 {
   "name": "z3",
-  "version": "1.0.3",
+  "version": "1.0.7",
   "description": "z3",
   "main": "index.js",
   "scripts": {
-    "preinstall": "node ./lib/preinstall.js",
-    "pushdev": "git add -A && git commit -m 'update' && git push -u origin pre-dev",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "pushdev": "git add -A && git commit -m 'update' && git push -u origin pre-dev"
   },
   "bin": {
     "z3": "./bin/z3"
