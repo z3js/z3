@@ -9,46 +9,30 @@
 
 var process  = require( 'process' );
 var path     = require( 'path' );
-var fs       = require( 'fs' );
 var download = require( '../lib/download' );
+var pkg      = require( '../package.json' );
+var chalk    = require( 'chalk' );
 
 module.exports = function ( templateName ) {
-
-    var roadmap = [
-        {
-            reg    : '**' + templateName + '/**',
-            release: '$&'
-        },
-        {
-            reg    : '**',
-            release: false
-        }
-    ];
-
-    return download( 'z3/z3-warehouse@master', function ( scaffold, tempPath ) {
-        deliver( scaffold, tempPath, roadmap, templateName );
+    return download( pkg.z3conf.template, function ( scaffold, tempPath ) {
+        deliver( scaffold, tempPath, templateName );
     } );
 };
 
-function deliver( scaffold, tempPath, roadmap, templateName ) {
+function deliver( scaffold, tempPath, templateName ) {
     var cwd = process.cwd();
 
-    scaffold.deliver(
-        tempPath,
-        cwd,
-        roadmap
-    );
+    var fromPath = path.join( tempPath, 'templates', templateName );
+
+    scaffold.util.find( fromPath ).forEach( function ( val ) {
+        val = val.replace( fromPath, '' ).replace( /^\\/g, '' );
+        console.log( chalk.yellow( '  Installing ' ) + val );
+    } );
 
     scaffold.util.move(
-        path.join( cwd, 'templates', templateName ),
+        fromPath,
         cwd
     );
 
-    if ( fs.existsSync( path.join( cwd, 'templates' ) ) ) {
-        scaffold.util.del( path.join( cwd, 'templates' ) );
-    }
-
-    console.log(
-        templateName + ' done!'
-    );
+    console.log( chalk.green( 'Get template: [ %s ] success!' ), templateName );
 }

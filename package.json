@@ -9,6 +9,10 @@
   "bin": {
     "z3": "./bin/z3"
   },
+  "z3conf": {
+    "template": "z3/z3-warehouse@master",
+    "component": "z3/z3-ui@master"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/z3js/z3.git"
@@ -24,6 +28,7 @@
   "homepage": "https://github.com/z3js/z3#readme",
   "devDependencies": {},
   "dependencies": {
+    "chalk": "^1.1.3",
     "co": "^4.6.0",
     "co-prompt": "^1.0.0",
     "commander": "^2.9.0",
