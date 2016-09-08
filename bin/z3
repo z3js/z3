@@ -11,8 +11,15 @@ program
     .action( require( '../command/init' ) );
 
 program
+    .command( 'list' )
+    .description( 'list available official templates or components' )
+    .option( '-t, --templates', 'list available official templates' )
+    .option( '-c, --components', 'list available official components' )
+    .action( require( '../command/list' ) );
+
+program
     .command( 'install' )
-    .description( ' install components' )
+    .description( 'install components' )
     .action( require( '../command/install' ) );
 
 program.parse( process.argv );
