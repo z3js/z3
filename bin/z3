@@ -12,7 +12,7 @@ program
 
 program
     .command( 'install' )
-    .description( ' install components' )
+    .description( 'install components' )
     .action( require( '../command/install' ) );
 
 program.parse( process.argv );
