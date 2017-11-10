@@ -13,6 +13,7 @@ let path    = require( 'path' );
 let co     = require( 'co' );
 let prompt = require( 'co-prompt' );
 let chalk  = require( 'chalk' );
+let ora    = require( 'ora' );
 
 let download = require( '../lib/download' );
 let build    = require( '../lib/build' );
@@ -20,7 +21,15 @@ let logger   = require( '../lib/logger' );
 let pkg      = require( '../package.json' );
 
 module.exports = function ( templateName ) {
+
+    if ( typeof templateName !== 'string' ) {
+        return templateName.help();
+    }
+
+    const spinner = ora( 'downloading template' );
+    spinner.start();
     return download( pkg.z3conf.template, function ( scaffold, tempPath ) {
+        spinner.stop();
         deliver( scaffold, {
             tempPath    : tempPath,
             templateName: templateName
