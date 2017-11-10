@@ -1,6 +1,6 @@
 # Z3
 
-A simple CLI for scaffolding Baidu-wallet projects.
+A simple CLI for scaffolding BW projects.
 
 ### Installation
 
