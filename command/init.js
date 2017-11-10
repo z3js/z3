@@ -7,32 +7,54 @@
 
 'use strict';
 
-var process  = require( 'process' );
-var path     = require( 'path' );
-var download = require( '../lib/download' );
-var pkg      = require( '../package.json' );
-var chalk    = require( 'chalk' );
+let process = require( 'process' );
+let path    = require( 'path' );
+
+let co     = require( 'co' );
+let prompt = require( 'co-prompt' );
+let chalk  = require( 'chalk' );
+
+let download = require( '../lib/download' );
+let build    = require( '../lib/build' );
+let logger   = require( '../lib/logger' );
+let pkg      = require( '../package.json' );
 
 module.exports = function ( templateName ) {
     return download( pkg.z3conf.template, function ( scaffold, tempPath ) {
-        deliver( scaffold, tempPath, templateName );
+        deliver( scaffold, {
+            tempPath    : tempPath,
+            templateName: templateName
+        } );
     } );
 };
 
-function deliver( scaffold, tempPath, templateName ) {
-    var cwd = process.cwd();
+function deliver( scaffold, options ) {
 
-    var fromPath = path.join( tempPath, 'templates', templateName );
+    let {tempPath, templateName} = options;
 
-    scaffold.util.find( fromPath ).forEach( function ( val ) {
-        val = val.replace( fromPath, '' ).replace( /^\\/g, '' );
-        console.log( chalk.yellow( '  Installing ' ) + val );
+    let cwd      = process.cwd();
+    let fromPath = path.join( tempPath, 'templates', templateName );
+
+    let files = scaffold.util.find( fromPath );
+
+    if ( files.length === 0 ) {
+        return logger.fatal( 'Failed to download repo [ ' + templateName + ' ]' );
+    }
+
+    co( function* () {
+        let namespace = yield prompt( '? Project Name: ' );
+        process.stdin.pause();
+
+        files.forEach( val => {
+            val = val.replace( fromPath, '' ).replace( /^\\/g, '' );
+            console.log( chalk.yellow( '  Installing ' ) + val );
+        } );
+
+        scaffold.util.move(
+            fromPath,
+            cwd
+        );
+
+        build( namespace, cwd );
     } );
-
-    scaffold.util.move(
-        fromPath,
-        cwd
-    );
-
-    console.log( chalk.green( 'Get template: [ %s ] success!' ), templateName );
 }

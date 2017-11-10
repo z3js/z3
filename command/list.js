@@ -27,6 +27,7 @@ module.exports = function ( options ) {
     }
 
     download( id, function ( scaffold, tempPath, pkg ) {
+        console.log();
         console.log( '  Available official %s:', snippet );
         console.log();
         each(
@@ -37,5 +38,6 @@ module.exports = function ( options ) {
                     ' - ' + (repo.description || '') );
             }
         );
+        console.log();
     } );
 };
