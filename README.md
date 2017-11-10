@@ -1,31 +1,29 @@
-# z3
+# vue-cli
 
-## 思路
+A simple CLI for scaffolding Baidu-wallet projects.
 
-1. init git clone 获取最新模板
-2. 读取模板配置文件
-3. git checkout 模板配置文件
-4. diff 配置文件，得到增量映射表
-5. checkout & update
-6. z3 list 显示现有模板
-  - 名称
-  - 描述
-  - 版本号
-  - 作者
-  - etc
-7. z3 init 安装模板
-8. z3 cw (create widget) 创建 widget
-9. z3 iw (install widget) 安装 widget
-10. TODO： 
-  - z3 publish 发布 widget 或模板？
-  - github？gitlab？切换模板来源；z3 config set registry https://github.com
-  - ~/.z3rc?
+### Installation
 
+Prerequisites: [Node.js](https://nodejs.org/en/) (>=4.x, 6.x preferred), npm version 3+ and [Git](https://git-scm.com/).
 
-## 关于生态
+``` bash
+$ npm install -g z3
+```
 
-z3 adduser
+### Usage
 
-.z3ignore 
+``` bash
+$ z3 init <template-name>
+```
 
+Example:
 
+``` bash
+$ z3 init spa 
+```
+
+// 安全红线，不能写太多
+
+### License
+
+[MIT](http://opensource.org/licenses/MIT)
