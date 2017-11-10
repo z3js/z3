@@ -1,4 +1,4 @@
-# vue-cli
+# Z3
 
 A simple CLI for scaffolding Baidu-wallet projects.
 
