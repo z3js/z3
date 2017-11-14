@@ -17,8 +17,10 @@ let ora    = require( 'ora' );
 
 let download = require( '../lib/download' );
 let build    = require( '../lib/build' );
+let util     = require( '../lib/util' );
 let logger   = require( '../lib/logger' );
-let pkg      = require( '../package.json' );
+
+let pkg = require( '../package.json' );
 
 module.exports = function ( templateName ) {
 
@@ -51,7 +53,13 @@ function deliver( scaffold, options ) {
     }
 
     co( function* () {
-        let namespace = yield prompt( '? Project Name: ' );
+        let projectName = util.getLocalDirName();
+        let namespace   = yield prompt( util.getAskDescription( 'Project Name', projectName ) );
+
+        if ( namespace === '' ) {
+            namespace = projectName;
+        }
+
         process.stdin.pause();
 
         files.forEach( val => {

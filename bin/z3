@@ -19,9 +19,19 @@ program
     .action( require( '../command/list' ) );
 
 program
-    .command( 'install' )
-    .description( 'install components' )
-    .action( require( '../command/install' ) );
+    .command( 'create' )
+    .description( 'create page' )
+    .action( require( '../command/create' ) );
+
+program
+    .command( 'doc' )
+    .description( 'docs for a z3-template in a web browser maybe' )
+    .action( require( '../command/doc' ) );
+
+// program
+//     .command( 'install' )
+//     .description( 'install components' )
+//     .action( require( '../command/install' ) );
 
 program.parse( process.argv );
 
