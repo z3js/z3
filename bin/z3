@@ -12,6 +12,11 @@ program
     .action( require( '../command/init' ) );
 
 program
+    .command( 'install <componentName>' )
+    .description( 'Install components' )
+    .action( require( '../command/install' ) );
+
+program
     .command( 'list' )
     .description( 'List available official templates or components' )
     .option( '-t, --templates', 'List available official templates' )
@@ -19,7 +24,7 @@ program
     .action( require( '../command/list' ) );
 
 program
-    .command( 'create <pageName> <templateName>' )
+    .command( 'create <pageName> [templateName]' )
     .description( 'Create a page under the specified template' )
     .action( require( '../command/create' ) );
 

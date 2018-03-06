@@ -1,6 +1,6 @@
 {
   "name": "z3",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "z3",
   "main": "index.js",
   "scripts": {
@@ -10,8 +10,7 @@
     "z3": "./bin/z3"
   },
   "z3conf": {
-    "template": "z3/z3-warehouse@master",
-    "component": "z3/z3-ui@master"
+    "template": "z3/z3-warehouse@master"
   },
   "repository": {
     "type": "git",

@@ -102,7 +102,7 @@ function replacing( files, meta ) {
             path,
             render( meta.data ),
             {encoding: 'utf8', flag: 'w'} );
-        logger.warn( '  Installing ' + fileName );
+        logger.success( `  Install [ ${fileName} ] success` );
     } );
 
     let $scaffold = getScaffold();
@@ -110,7 +110,7 @@ function replacing( files, meta ) {
     // 删掉忽略列表文件
     meta.ignore.forEach( file => {
         $scaffold.util.del( PATH.resolve( cwd + file ) );
-        logger.warn( '  Removing ignore file ' + file );
+        logger.success( `  Remove ignore file [ ${file} ] success` );
     } );
 
 }

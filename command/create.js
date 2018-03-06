@@ -14,6 +14,8 @@ module.exports = function ( pageName, templateName ) {
             checkTemplate
         }        = require( '../lib/util' );
 
+    templateName = templateName || 'spa';
+
     download( pkg.z3conf.template )
         .then( res => findTemplate( templateName, res.path ) )
         .then( setGlobalTemplatePath )
@@ -76,7 +78,7 @@ function build( options, pageName ) {
                 $file.content, 'utf8'
             );
 
-            logger.warn( '  Append to ' + $file.append );
+            logger.success( '  Append to ' + $file.append );
             return;
         }
 
@@ -85,6 +87,6 @@ function build( options, pageName ) {
         fs.outputFile(
             getPath( $file.dist, `/${fileName}` ),
             $file.content );
-        logger.warn( `  Create ${fileName} to ${$file.dist}` );
+        logger.success( `  Create ${fileName} to ${$file.dist}` );
     } );
 }
