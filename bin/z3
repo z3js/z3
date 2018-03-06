@@ -7,31 +7,26 @@ var version = require( '../package' ).version;
 program.version( version ).usage( '<command> [options]' );
 
 program
-    .command( 'init' )
-    .description( 'generate a new project from a template' )
+    .command( 'init <templateName>' )
+    .description( 'Generate a new project from a template' )
     .action( require( '../command/init' ) );
 
 program
     .command( 'list' )
-    .description( 'list available official templates or components' )
-    .option( '-t, --templates', 'list available official templates' )
-    .option( '-c, --components', 'list available official components' )
+    .description( 'List available official templates or components' )
+    .option( '-t, --templates', 'List available official templates' )
+    .option( '-c, --components', 'List available official components' )
     .action( require( '../command/list' ) );
 
 program
-    .command( 'create' )
-    .description( 'create page' )
+    .command( 'create <pageName> <templateName>' )
+    .description( 'Create a page under the specified template' )
     .action( require( '../command/create' ) );
 
 program
-    .command( 'doc' )
-    .description( 'docs for a z3-template in a web browser maybe' )
+    .command( 'doc [templateName]' )
+    .description( 'Docs for a z3-template in a web browser maybe' )
     .action( require( '../command/doc' ) );
-
-// program
-//     .command( 'install' )
-//     .description( 'install components' )
-//     .action( require( '../command/install' ) );
 
 program.parse( process.argv );
 
