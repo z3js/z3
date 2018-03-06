@@ -38,7 +38,9 @@ function setGlobalTemplatePath( path ) {
  * 运行模板的meta.js
  */
 function runMeta( files ) {
-    let meta = require( getMetaPath() )();
+    let meta = require( getMetaPath() )( {
+        tempPath: templatePath
+    } );
     return {
         files: files,
         meta : meta
