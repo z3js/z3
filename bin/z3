@@ -29,7 +29,7 @@ program
     .action( require( '../command/create' ) );
 
 program
-    .command( 'doc [templateName]' )
+    .command( 'doc <templateName>' )
     .description( 'Docs for a z3-template in a web browser maybe' )
     .action( require( '../command/doc' ) );
 

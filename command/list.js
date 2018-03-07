@@ -22,7 +22,7 @@ module.exports = function ( options ) {
             console.log( '  Available official %s:', snippet );
             console.log();
             each(
-                pkg.data, function ( repo ) {
+                pkg.data.templates, function ( repo ) {
                     console.log(
                         '  ' + chalk.yellow( '★' ) +
                         '  ' + chalk.blue( repo.name ) +

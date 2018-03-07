@@ -1,8 +1,13 @@
-const open = require( 'open' );
+const open     = require( 'open' );
+const download = require( '../lib/download' );
 
-/**
- * TODO: 文档整理完毕后，根据参数跳转到对应的模板文档处
- */
-module.exports = function () {
-    open( 'http://gitlab.baidu.com/z3/z3-warehouse' );
+module.exports = function ( templateName ) {
+
+    download( require( '../package.json' ).z3conf.template )
+        .then( res => {
+            let {pkg} = res;
+            open( pkg.data.documentPrefix + templateName + '.md' );
+        } );
+
+
 };
