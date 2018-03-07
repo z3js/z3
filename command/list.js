@@ -8,15 +8,14 @@ module.exports = function ( options ) {
     let pkg      = require( '../package.json' );
     let each     = require( '../lib/util' ).each;
     let chalk    = require( 'chalk' );
-    let id       = pkg.z3conf.template;
-    let snippet  = 'templates';
+
+    let snippet = 'templates';
 
     if ( options.components ) {
-        id      = pkg.z3conf.component;
         snippet = 'components';
     }
 
-    download( id )
+    download( pkg.z3conf.template )
         .then( res => {
             let {pkg} = res;
             console.log();
