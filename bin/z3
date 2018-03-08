@@ -33,6 +33,16 @@ program
     .description( 'Docs for a z3-template in a web browser maybe' )
     .action( require( '../command/doc' ) );
 
+program
+    .command( 'publish' )
+    .description( 'Publish a component' )
+    .action( require( '../command/publish' ) );
+
+program
+    .command( 'config <key> <value>' )
+    .description( 'Generate user config' )
+    .action( require( '../command/config' ) );
+
 program.parse( process.argv );
 
 if ( !program.args.length ) {
