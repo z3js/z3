@@ -34,7 +34,7 @@ program
     .action( require( '../command/doc' ) );
 
 program
-    .command( 'publish' )
+    .command( 'publish [componentName]' )
     .description( 'Publish a component' )
     .action( require( '../command/publish' ) );
 
