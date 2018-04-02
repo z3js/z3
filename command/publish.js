@@ -58,7 +58,7 @@ module.exports = function ( componentName ) {
             let filePath = ['', 'components', name,
                             fileName]
                 .map( i => i.replace( Path.sep, '' ) )
-                .join( Path.sep );
+                .join( '/' );
 
             // 尝试创建
             req( buildOptions(
