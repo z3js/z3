@@ -7,12 +7,72 @@ module.exports = function ( componentName ) {
     let process  = require( 'process' );
     const chalk  = require( 'chalk' );
     const sep    = chalk.gray( '·' );
+    let Path     = require( 'path' );
 
     let {getLocalDirName, getScaffold} = require( '../lib/util' );
 
+    let $s = getScaffold();
+
     download( pkg.z3conf.template )
-        .then( getAPI )
-        .then( queue )
+        .then( data => {
+
+            let localDirName = getLocalDirName();
+
+            let name = (componentName || localDirName);
+
+            function buildOptions( msg, action ) {
+                return {
+                    method: 'POST',
+                    uri   : getAPI( data ),
+                    body  : {
+                        branch        : 'master',
+                        commit_message: msg,
+                        actions       : action
+                    },
+                    json  : true
+                }
+            };
+
+            function buildActions() {
+                let currentFiles = getFiles();
+                let result       = [];
+
+                currentFiles.forEach( i => {
+
+                    let fileName = i.replace( process.cwd(), '' );
+
+                    let filePath = ['', 'components', name,
+                                    fileName]
+                        .map( i => i.replace( Path.sep, '' ) )
+                        .join( '/' );
+
+                    function getType( path ) {
+                        path      = path.split( 'component' )[1];
+                        let files = $s.util.find( data.path, new RegExp( path, 'g' ) );
+                        return files.length === 0 ? 'create' : 'update';
+                    }
+
+                    let action = {
+                        content  : $s.util.read( i ),
+                        action   : getType( i ),
+                        file_path: filePath
+                    };
+
+                    result.push( action );
+
+                } );
+                return result;
+            }
+
+            req( buildOptions(
+                `组件 ${name} 发布`, buildActions()
+            ) ).then( data => {
+                logger.success( `${data.author_name}<${data.author_email}> publish "${name}" success, to get started:
+
+            z3 install ${name}` )
+            } )
+                .catch( logger.fatal );
+        } )
         .catch( logger.fatal );
 
 
@@ -22,75 +82,8 @@ module.exports = function ( componentName ) {
         return `${commitPrefix}?private_token=${getRc().token}`;
     }
 
-    let $s = getScaffold();
 
     function getFiles() {
         return $s.util.find( process.cwd() );
-    }
-
-    function queue( api ) {
-
-        function buildOptions( msg, action ) {
-            return {
-                method: 'POST',
-                uri   : api,
-                body  : {
-                    branch        : 'master',
-                    commit_message: msg,
-                    actions       : [action]
-                },
-                json  : true
-            }
-        }
-
-        let files   = getFiles();
-        let spinner = require( 'ora' )( `publishing......` );
-        let max     = files.length;
-        let current = 0;
-
-        function build( file, type ) {
-            let fileName     = file.replace( process.cwd(), '' );
-            let localDirName = getLocalDirName();
-            let Path         = require( 'path' );
-
-            let name = (componentName || localDirName);
-
-            let filePath = ['', 'components', name,
-                            fileName]
-                .map( i => i.replace( Path.sep, '' ) )
-                .join( '/' );
-
-            // 尝试创建
-            req( buildOptions(
-                `${type} ${fileName}`,
-                {
-                    content  : $s.util.read( file ),
-                    action   : type,
-                    file_path: filePath
-                }
-            ) ).then( data => {
-                    logger.warn( ` ${data.author_name}<${data.author_email}> ${type} ${fileName} success` );
-                    spinner.stop();
-                    current++;
-                    if ( current === max ) {
-                        logger.success( ` 
-                        Publish "${name}" success, to get started:
-                        
-                            z3 install ${name}` )
-                    }
-                }
-                // 失败则尝试更新
-            ).catch( err => build( file, 'update' ) );
-        }
-
-        if ( max > 10 ) {
-            return logger.fatal( 'Max 10 files can be uploaded' );
-        }
-
-        spinner.start();
-
-        files.forEach( file => {
-            build( file, 'create' );
-        } );
     }
 };
