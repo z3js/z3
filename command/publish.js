@@ -12,6 +12,7 @@ module.exports = function ( componentName ) {
     let {getLocalDirName, getScaffold} = require( '../lib/util' );
 
     let $s = getScaffold();
+    let wrapPath = process.cwd().split('/').slice(-2)[0];
 
     download( pkg.z3conf.template )
         .then( data => {
@@ -47,7 +48,7 @@ module.exports = function ( componentName ) {
                         .join( '/' );
 
                     function getType( path ) {
-                        path      = path.split( 'component' )[1];
+                        path      = path.split( wrapPath )[1];
                         let files = $s.util.find( data.path, new RegExp( path, 'g' ) );
                         return files.length === 0 ? 'create' : 'update';
                     }
