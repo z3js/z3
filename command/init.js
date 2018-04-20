@@ -3,6 +3,7 @@
  */
 
 let logger = require( '../lib/logger' );
+let getRc  = require( '../lib/config' ).get;
 let {
         checkTemplate,
         getScaffold,
@@ -62,7 +63,7 @@ function build( options ) {
     let {files, meta} = options;
 
     co( function* () {
-        let data    = meta.data;
+        let data = Object.assign( meta.data, getRc() );
         let prompts = meta.prompts;
 
         for ( let key in prompts ) {
