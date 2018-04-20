@@ -3,6 +3,7 @@
  */
 
 let logger = require( '../lib/logger' );
+let getRc  = require( '../lib/config' ).get;
 let templatePath;
 
 module.exports = function ( pageName, templateName ) {
@@ -40,6 +41,7 @@ function runMeta( files ) {
     let meta = require( getMetaPath() )( {
         tempPath: templatePath
     } );
+
     return {
         files: files,
         meta : meta
@@ -56,9 +58,11 @@ function build( options, pageName ) {
     let fs   = require( 'fs-extra' );
     let etpl = require( 'etpl' );
     let path = require( 'path' );
-    let data = {
+    let data = Object.assign( getRc(), {
         pageName: pageName
-    };
+    } );
+
+    console.log( data );
 
     function getPath( ...p ) {
         p.unshift( require( 'process' ).cwd() );

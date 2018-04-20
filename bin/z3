@@ -39,7 +39,7 @@ program
     .action( require( '../command/publish' ) );
 
 program
-    .command( 'config <key> <value>' )
+    .command( 'config [key] [value]' )
     .description( 'Generate user config' )
     .action( require( '../command/config' ) );
 
