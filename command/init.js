@@ -99,15 +99,23 @@ function replacing( files, meta ) {
         logger.success( `  Install [ ${fileName} ] start` );
         let extname = PATH.extname(fileName);
         let type = mime.getType(extname.slice(1));
+        // should add a extname whitelist
         if(!type || !type.match(/^text\//) || !type.match(/javascript|json|typescript/)) {
            logger.success(`not a text file [${extname}:${type}] skip`);
         } else {
             let file   = readFile( path );
-            let render = etpl.compile( file );
-            fs.writeFileSync(
-                path,
-                render( meta.data ),
-                {encoding: 'utf8', flag: 'w'} );
+            let compileFailed = false;
+            try {
+                let render = etpl.compile( file );
+            } catch (e) {
+                compileFailed = true;
+            }
+            if (!compileFailed) {
+                fs.writeFileSync(
+                    path,
+                    render( meta.data ),
+                    {encoding: 'utf8', flag: 'w'} );
+            }
         }
         logger.success( `  Install [ ${fileName} ] success` );
     });
