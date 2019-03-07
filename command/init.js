@@ -89,22 +89,28 @@ function replacing( files, meta ) {
     let etpl = require( 'etpl' );
     let fs   = require( 'fs' );
     let cwd  = require( 'process' ).cwd();
+    let mime = require('mime/lite');
 
     // 获取问题结果
-    files.forEach( path => {
+    files.forEach(path => {
         let fileName = path.replace( templatePath, '' ).replace( /^\\/g, '' );
 
         path = PATH.resolve( cwd + '/' + fileName );
-
-        let file   = readFile( path );
-        let render = etpl.compile( file );
-
-        fs.writeFileSync(
-            path,
-            render( meta.data ),
-            {encoding: 'utf8', flag: 'w'} );
+        logger.success( `  Install [ ${fileName} ] start` );
+        let extname = PATH.extname(fileName);
+        let type = mime.getType(extname.slice(1));
+        if(!type || !type.match(/^text\//) || !type.match(/javascript|json|typescript/)) {
+           logger.success(`not a text file [${extname}:${type}] skip`);
+        } else {
+            let file   = readFile( path );
+            let render = etpl.compile( file );
+            fs.writeFileSync(
+                path,
+                render( meta.data ),
+                {encoding: 'utf8', flag: 'w'} );
+        }
         logger.success( `  Install [ ${fileName} ] success` );
-    } );
+    });
 
     let $scaffold = getScaffold();
 
