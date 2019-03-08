@@ -12,6 +12,32 @@ let {
 
 let templatePath;
 
+let textFileWhiteList = [
+    'package.json',
+    'BCLOUD',
+    'README.md',
+];
+let textFileExtWhiteList = [
+    '.js',
+    '.ts',
+    '.es',
+    '.es6',
+
+    '.json',
+    '.conf',
+
+    '.jade',
+    '.tpl',
+    '.html',
+    '.htm',
+
+    '.css',
+    '.less',
+
+    '.md',
+    '.sh',
+];
+
 module.exports = function ( templateName ) {
 
     let pkg            = require( '../package.json' );

@@ -7,7 +7,7 @@
     "pushdev": "git add -A && git commit -m 'update' && git push -u origin pre-dev"
   },
   "bin": {
-    "z3": "./bin/z3"
+    "z3": "./bin/z3.js"
   },
   "z3conf": {
     "template": "z3/z3-warehouse@master"
