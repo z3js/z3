@@ -2,13 +2,13 @@
  * @file
  */
 
-let logger = require( '../lib/logger' );
-let getRc  = require( '../lib/config' ).get;
+let logger = require('../lib/logger');
+let getRc = require('../lib/config').get;
 let {
-        checkTemplate,
-        getScaffold,
-        readFile
-    }      = require( '../lib/util' );
+    checkTemplate,
+    getScaffold,
+    readFile
+} = require('../lib/util');
 
 let templatePath;
 
@@ -30,6 +30,7 @@ let textFileExtWhiteList = [
     '.tpl',
     '.html',
     '.htm',
+    '.vue',
 
     '.css',
     '.less',
@@ -38,25 +39,25 @@ let textFileExtWhiteList = [
     '.sh',
 ];
 
-module.exports = function ( templateName ) {
+module.exports = function (templateName) {
 
-    let pkg            = require( '../package.json' );
-    let download       = require( '../lib/download' );
-    let {findTemplate} = require( '../lib/util' );
+    let pkg = require('../package.json');
+    let download = require('../lib/download');
+    let { findTemplate } = require('../lib/util');
 
-    download( pkg.z3conf.template )
-        .then( res => findTemplate( templateName, res.path ) )
-        .then( setGlobalTemplatePath )
-        .then( path => checkTemplate( templateName, path ) )
-        .then( runMeta )
-        .then( build )
-        .catch( logger.fatal );
+    download(pkg.z3conf.template)
+        .then(res => findTemplate(templateName, res.path))
+        .then(setGlobalTemplatePath)
+        .then(path => checkTemplate(templateName, path))
+        .then(runMeta)
+        .then(build)
+        .catch(logger.fatal);
 };
 
 /**
  * 缓存一下已找到的模板路径
  */
-function setGlobalTemplatePath( path ) {
+function setGlobalTemplatePath(path) {
     templatePath = path;
     return templatePath;
 }
@@ -64,39 +65,46 @@ function setGlobalTemplatePath( path ) {
 /**
  * 运行模板的meta.js
  */
-function runMeta( files ) {
-    let meta = require( getMetaPath() )( {
-        tempPath: templatePath
-    } );
-    return {
-        files: files,
-        meta : meta
-    };
+function runMeta(files) {
+    let metaFilePath = getMetaPath();
+    try {
+        let meta = require(getMetaPath())({
+            tempPath: templatePath
+        });
+        return {
+            files: files,
+            meta: meta
+        };
+    } catch (error) {
+        logger.fatal(` get meta info from meta.js [${metaFilePath}] failed
+${error}
+${error.stack}`);
+    }
 }
 
 function getMetaPath() {
-    return require( 'path' ).join( templatePath, 'meta.js' );
+    return require('path').join(templatePath, 'meta.js');
 }
 
-function build( options ) {
+function build(options) {
 
-    let co      = require( 'co' );
-    let prompt  = require( 'co-prompt' );
-    let process = require( 'process' );
+    let co = require('co');
+    let prompt = require('co-prompt');
+    let process = require('process');
 
-    let getAskDescription = require( '../lib/util' ).getAskDescription;
+    let getAskDescription = require('../lib/util').getAskDescription;
 
-    let {files, meta} = options;
+    let { files, meta } = options;
 
-    co( function* () {
-        let data = Object.assign( meta.data, getRc() );
+    co(function* () {
+        let data = Object.assign(meta.data, getRc());
         let prompts = meta.prompts;
 
-        for ( let key in prompts ) {
-            let temp  = prompts[key];
-            data[key] = yield prompt( getAskDescription( temp.message, temp.default ) );
+        for (let key in prompts) {
+            let temp = prompts[key];
+            data[key] = yield prompt(getAskDescription(temp.message, temp.default));
 
-            if ( data[key] === '' ) {
+            if (data[key] === '') {
                 data[key] = temp.default;
             }
         }
@@ -104,40 +112,62 @@ function build( options ) {
         process.stdin.pause();
 
         // 文件移转
-        getScaffold().util.move( templatePath, process.cwd() );
+        getScaffold().util.move(templatePath, process.cwd());
 
-        replacing( files, meta );
-    } );
+        replacing(files, meta);
+    });
 }
 
-function replacing( files, meta ) {
-    let PATH = require( 'path' );
-    let etpl = require( 'etpl' );
-    let fs   = require( 'fs' );
-    let cwd  = require( 'process' ).cwd();
+function replacing(files, meta) {
+    let PATH = require('path');
+    let etpl = require('etpl');
+    let fs = require('fs');
+    let cwd = require('process').cwd();
+    let mime = require('mime');
 
     // 获取问题结果
-    files.forEach( path => {
-        let fileName = path.replace( templatePath, '' ).replace( /^\\/g, '' );
+    files.forEach(path => {
+        let fileName = path.replace(templatePath, '').replace(/^\\/g, '');
 
-        path = PATH.resolve( cwd + '/' + fileName );
+        path = PATH.resolve(cwd + '/' + fileName);
+        logger.success(`  Install [ ${fileName} ] start`);
 
-        let file   = readFile( path );
-        let render = etpl.compile( file );
+        let basename = PATH.basename(fileName);
+        let extname = PATH.extname(fileName);
 
-        fs.writeFileSync(
-            path,
-            render( meta.data ),
-            {encoding: 'utf8', flag: 'w'} );
-        logger.success( `  Install [ ${fileName} ] success` );
-    } );
+        let type = mime.getType(extname.slice(1));
+        // should add a extname whitelist
+        if (
+            textFileWhiteList.indexOf(basename) == -1
+            && textFileExtWhiteList.indexOf(extname) == -1
+            && (!type || !type.match(/^text\//) || !type.match(/javascript|json|typescript/))
+        ) {
+            logger.warn(`not a text file [${fileName}:${type}] skip`);
+        } else {
+            let file = readFile(path);
+            let compileFailed = false;
+
+            try {
+                let render = etpl.compile(file);
+                file = render(meta.data);
+            } catch (e) {
+                compileFailed = true;
+                logger.warn(`compile failed [${fileName}] skip`);
+            }
+
+            if (!compileFailed) {
+                fs.writeFileSync(path, file, { encoding: 'utf8', flag: 'w' });
+            }
+        }
+        logger.success(`  Install [ ${fileName} ] success`);
+    });
 
     let $scaffold = getScaffold();
 
     // 删掉忽略列表文件
-    meta.ignore.forEach( file => {
-        $scaffold.util.del( PATH.resolve( cwd + file ) );
-        logger.success( `  Remove ignore file [ ${file} ] success` );
-    } );
+    meta.ignore.forEach(file => {
+        $scaffold.util.del(PATH.resolve(cwd + file));
+        logger.success(`  Remove ignore file [ ${file} ] success`);
+    });
 
 }
