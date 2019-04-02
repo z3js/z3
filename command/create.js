@@ -42,6 +42,15 @@ function runMeta( files ) {
         tempPath: templatePath
     } );
 
+    if(meta instanceof Promise) {
+        return meta.then(function ( meta ) {
+            return {
+                files: files,
+                meta: meta
+            }
+        });
+    }
+
     return {
         files: files,
         meta : meta
