@@ -130,7 +130,7 @@ function replacing(files, meta) {
     let cwd = require('process').cwd();
     let mime = require('mime');
 
-    etpl.config({
+    let fileRenderEngin = new etpl.Engine({
         variableOpen: '<#' || meta.variableOpen,
         variableClose: '#>' || meta.variableClose,
     });
@@ -158,7 +158,7 @@ function replacing(files, meta) {
             let compileFailed = false;
 
             try {
-                let render = etpl.compile(file);
+                let render = fileRenderEngin.compile(file);
                 file = render(meta.data);
             } catch (e) {
                 compileFailed = true;
