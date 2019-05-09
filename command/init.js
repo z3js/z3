@@ -67,19 +67,24 @@ function setGlobalTemplatePath(path) {
  */
 function runMeta(files) {
     let metaFilePath = getMetaPath();
-    try {
+    return new Promise(function ( resolve, reject ) {
+        
         let meta = require(getMetaPath())({
             tempPath: templatePath
         });
-        return {
-            files: files,
-            meta: meta
-        };
-    } catch (error) {
-        logger.fatal(` get meta info from meta.js [${metaFilePath}] failed
+        resolve( meta);
+    }).then(function (meta) {
+        try {
+            return {
+                files: files,
+                meta: meta
+            };
+        } catch (error) {
+            logger.fatal(` get meta info from meta.js [${metaFilePath}] failed
 ${error}
 ${error.stack}`);
-    }
+        }
+    });
 }
 
 function getMetaPath() {
@@ -124,6 +129,11 @@ function replacing(files, meta) {
     let fs = require('fs');
     let cwd = require('process').cwd();
     let mime = require('mime');
+
+    etpl.config({
+        variableOpen: '<#' || meta.variableOpen,
+        variableClose: '#>' || meta.variableClose,
+    });
 
     // 获取问题结果
     files.forEach(path => {
