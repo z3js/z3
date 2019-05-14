@@ -67,19 +67,24 @@ function setGlobalTemplatePath(path) {
  */
 function runMeta(files) {
     let metaFilePath = getMetaPath();
-    try {
+    return new Promise(function ( resolve, reject ) {
+        
         let meta = require(getMetaPath())({
             tempPath: templatePath
         });
-        return {
-            files: files,
-            meta: meta
-        };
-    } catch (error) {
-        logger.fatal(` get meta info from meta.js [${metaFilePath}] failed
+        resolve( meta);
+    }).then(function (meta) {
+        try {
+            return {
+                files: files,
+                meta: meta
+            };
+        } catch (error) {
+            logger.fatal(` get meta info from meta.js [${metaFilePath}] failed
 ${error}
 ${error.stack}`);
-    }
+        }
+    });
 }
 
 function getMetaPath() {
@@ -125,6 +130,11 @@ function replacing(files, meta) {
     let cwd = require('process').cwd();
     let mime = require('mime');
 
+    let fileRenderEngin = new etpl.Engine({
+        variableOpen: '<#' || meta.variableOpen,
+        variableClose: '#>' || meta.variableClose,
+    });
+
     // 获取问题结果
     files.forEach(path => {
         let fileName = path.replace(templatePath, '').replace(/^\\/g, '');
@@ -148,7 +158,7 @@ function replacing(files, meta) {
             let compileFailed = false;
 
             try {
-                let render = etpl.compile(file);
+                let render = fileRenderEngin.compile(file);
                 file = render(meta.data);
             } catch (e) {
                 compileFailed = true;
