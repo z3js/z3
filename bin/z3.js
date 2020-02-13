@@ -34,6 +34,11 @@ program
     .action( require( '../command/doc' ) );
 
 program
+    .command( 'wfe-init' )
+    .description( 'Initialize a new project from wfe template' )
+    .action( require( '../command/wfe-init' ) );
+
+program
     .command( 'publish [componentName]' )
     .description( 'Publish a component' )
     .action( require( '../command/publish' ) );
