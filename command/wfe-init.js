@@ -1,8 +1,6 @@
 const execa = require('execa');
 
 const {
-          success,
-          warn,
           fatal
       } = require('../lib/logger');
 
@@ -39,7 +37,6 @@ const Listr        = require('listr');
 const {Observable} = require('rxjs');
 
 module.exports = function () {
-
     return new Listr([
         {
             title: 'Nodejs版本',
@@ -64,8 +61,21 @@ module.exports = function () {
             }
         },
         {
-            title: '安装模板工具',
-            task() {
+            title: '检查依赖',
+            task(ctx) {
+                return execa
+                    .command('npm ls --depth 0')
+                    .then(res => {
+                        ctx.installed = res
+                            .stdout
+                            .indexOf('@wfe/vue-cli-plugin-wfe') !== -1;
+                    })
+            }
+        },
+        {
+            title  : '安装模板工具',
+            enabled: ctx => ctx.installed === false,
+            task(ctx, task) {
                 return new Observable(ob => {
                     let pct   = 0;
                     let timer = setInterval(() => {
@@ -77,6 +87,7 @@ module.exports = function () {
                     }, 1000);
 
                     let stop = e => {
+                        task.output = 'Installing dependencies...';
                         clearInterval(timer);
                         ob.complete();
                     };
@@ -90,15 +101,17 @@ module.exports = function () {
             }
         }
     ])
-        .run()
-        .then(() => {
-            success(`
-                恭喜您已全部安装完成！
-                可以使用 ${chalk.bold('vue invoke @wfe/wfe')} 命令初始化模板！
-                感谢您的使用！
-            `);
+        .run({
+            installed: false
         })
-        .catch(fatal);
+        .then(() => {
+            return execa.command(`vue invoke @wfe/wfe`, {
+                stdio: ['inherit', 'inherit', 'inherit']
+            });
+        })
+        .catch((e) => {
+            fatal(e);
+        });
 };
 
 function checkNodeVersion() {
